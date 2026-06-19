@@ -1,0 +1,1774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIX YOU Staff Command Centre</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #FF4D8D;
+            --primary-dark: #E43373;
+            --secondary: #FFD14A;
+            --success: #22C55E;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --info: #3B82F6;
+            --dark: #172033;
+            --dark-2: #23304A;
+            --muted: #6B7280;
+            --line: #E5E7EB;
+            --bg: #F4F7FB;
+            --card: #FFFFFF;
+            --shadow: 0 16px 40px rgba(23, 32, 51, 0.10);
+            --radius: 22px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Inter, Segoe UI, Tahoma, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--dark);
+            min-height: 100vh;
+        }
+
+        button, input, select, textarea {
+            font-family: inherit;
+        }
+
+        .login-screen {
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at top left, rgba(255, 209, 74, 0.95), transparent 32%),
+                linear-gradient(135deg, #ff4d8d 0%, #9b5cf6 48%, #172033 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            z-index: 9999;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 440px;
+            background: rgba(255,255,255,0.96);
+            border: 1px solid rgba(255,255,255,0.45);
+            border-radius: 30px;
+            padding: 34px;
+            box-shadow: 0 24px 70px rgba(0,0,0,0.28);
+            backdrop-filter: blur(16px);
+            text-align: center;
+        }
+
+        .login-logo {
+            width: 74px;
+            height: 74px;
+            margin: 0 auto 18px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: grid;
+            place-items: center;
+            color: white;
+            font-size: 2rem;
+            box-shadow: 0 12px 28px rgba(255,77,141,0.35);
+        }
+
+        .login-card h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .login-card p {
+            color: var(--muted);
+            margin-bottom: 24px;
+        }
+
+        .field {
+            text-align: left;
+            margin-bottom: 14px;
+        }
+
+        .field label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: var(--dark-2);
+            margin-bottom: 7px;
+        }
+
+        .field input, .field select {
+            width: 100%;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 13px 14px;
+            outline: none;
+            font-size: 0.98rem;
+            background: white;
+        }
+
+        .field input:focus, .field select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(255,77,141,0.12);
+        }
+
+        .primary-btn {
+            border: none;
+            color: white;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 13px 16px;
+            border-radius: 14px;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 12px 26px rgba(255,77,141,0.28);
+        }
+
+        .secondary-btn, .danger-btn, .success-btn, .warning-btn, .ghost-btn {
+            border: none;
+            padding: 11px 14px;
+            border-radius: 13px;
+            font-weight: 900;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .secondary-btn { background: var(--dark); color: white; }
+        .danger-btn { background: var(--danger); color: white; }
+        .success-btn { background: var(--success); color: white; }
+        .warning-btn { background: var(--warning); color: white; }
+        .ghost-btn { background: #F3F4F6; color: var(--dark); }
+
+        .login-card .primary-btn {
+            width: 100%;
+            margin-top: 8px;
+            font-size: 1rem;
+        }
+
+        .login-error {
+            display: none;
+            margin-top: 12px;
+            padding: 11px;
+            border-radius: 12px;
+            background: #FEE2E2;
+            color: #B91C1C;
+            font-weight: 800;
+        }
+
+        .demo-note {
+            margin-top: 16px;
+            font-size: 0.88rem;
+            color: var(--muted);
+        }
+
+        .app-shell {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: var(--dark);
+            color: white;
+            padding: 28px 22px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            margin-bottom: 30px;
+        }
+
+        .brand-mark {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: grid;
+            place-items: center;
+            box-shadow: 0 10px 22px rgba(255,77,141,0.35);
+        }
+
+        .brand h2 {
+            font-size: 1.35rem;
+            line-height: 1.05;
+        }
+
+        .brand small {
+            color: #B6C2D6;
+            font-weight: 700;
+        }
+
+        .nav-group-title {
+            color: #8EA0BF;
+            font-size: 0.75rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+            margin: 22px 10px 10px;
+            text-transform: uppercase;
+        }
+
+        .nav-btn {
+            width: 100%;
+            border: none;
+            background: transparent;
+            color: #D7DFEF;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 13px 14px;
+            border-radius: 14px;
+            cursor: pointer;
+            font-weight: 850;
+            text-align: left;
+            margin-bottom: 5px;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: rgba(255,255,255,0.10);
+            color: white;
+        }
+
+        .nav-btn.active {
+            box-shadow: inset 4px 0 0 var(--primary);
+        }
+
+        .sidebar-footer {
+            margin-top: 26px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255,255,255,0.12);
+        }
+
+        .main {
+            padding: 28px;
+            overflow: hidden;
+        }
+
+        .topbar {
+            background: rgba(255,255,255,0.86);
+            border: 1px solid rgba(255,255,255,0.75);
+            border-radius: 24px;
+            padding: 20px 22px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 26px;
+            backdrop-filter: blur(10px);
+        }
+
+        .topbar h1 {
+            font-size: 1.75rem;
+            margin-bottom: 4px;
+        }
+
+        .topbar p {
+            color: var(--muted);
+            font-weight: 650;
+        }
+
+        .topbar-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 22px;
+        }
+
+        .kpi-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 22px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255,255,255,0.75);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card::after {
+            content: "";
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            right: -45px;
+            top: -45px;
+            background: rgba(255,77,141,0.10);
+            border-radius: 999px;
+        }
+
+        .kpi-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            background: rgba(255,77,141,0.12);
+            color: var(--primary);
+            font-size: 1.15rem;
+            margin-bottom: 14px;
+        }
+
+        .kpi-card h3 {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-bottom: 7px;
+        }
+
+        .kpi-value {
+            font-size: 1.85rem;
+            font-weight: 950;
+            letter-spacing: -0.6px;
+        }
+
+        .kpi-sub {
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: 0.86rem;
+            font-weight: 700;
+        }
+
+        .panel {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255,255,255,0.75);
+            margin-bottom: 22px;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        .panel-header h2 {
+            font-size: 1.35rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .panel-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .toolbar {
+            display: grid;
+            grid-template-columns: 1.3fr 0.8fr 0.8fr auto;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .input, .select {
+            width: 100%;
+            border: 1px solid var(--line);
+            background: #fff;
+            border-radius: 13px;
+            padding: 12px 13px;
+            outline: none;
+            font-weight: 700;
+        }
+
+        .input:focus, .select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(255,77,141,0.10);
+        }
+
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 980px;
+            background: white;
+        }
+
+        th, td {
+            padding: 15px;
+            border-bottom: 1px solid var(--line);
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background: #F8FAFC;
+            color: var(--dark-2);
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .order-no {
+            font-weight: 950;
+            color: var(--primary);
+        }
+
+        .items-cell {
+            line-height: 1.55;
+            max-width: 340px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 7px 11px;
+            border-radius: 999px;
+            color: white;
+            font-weight: 900;
+            font-size: 0.82rem;
+            white-space: nowrap;
+        }
+
+        .badge-preparing { background: var(--warning); }
+        .badge-ready { background: var(--success); }
+        .badge-completed { background: var(--dark-2); }
+        .badge-cancelled { background: var(--danger); }
+        .badge-active { background: var(--success); }
+        .badge-disabled { background: var(--muted); }
+        .badge-soldout { background: var(--danger); }
+        .badge-available { background: var(--info); }
+
+        .quick-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .mini-btn {
+            border: none;
+            border-radius: 10px;
+            padding: 8px 10px;
+            font-weight: 900;
+            cursor: pointer;
+            color: white;
+            font-size: 0.8rem;
+        }
+
+        .mini-warning { background: var(--warning); }
+        .mini-success { background: var(--success); }
+        .mini-dark { background: var(--dark); }
+        .mini-danger { background: var(--danger); }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .three-col {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .finance-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 13px 0;
+            border-bottom: 1px solid var(--line);
+            font-weight: 750;
+        }
+
+        .finance-row:last-child { border-bottom: none; }
+        .finance-row span { color: var(--muted); }
+        .finance-row strong { text-align: right; }
+
+        .net-box {
+            margin-top: 18px;
+            padding: 18px;
+            border-radius: 18px;
+            color: white;
+            font-size: 1.25rem;
+            font-weight: 950;
+            text-align: center;
+            background: linear-gradient(135deg, var(--success), #86EFAC);
+        }
+
+        .queue-board {
+            display: grid;
+            grid-template-columns: 0.9fr 1.4fr;
+            border-radius: 24px;
+            overflow: hidden;
+            min-height: 360px;
+            box-shadow: inset 0 0 0 1px var(--line);
+        }
+
+        .queue-left {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 28px;
+        }
+
+        .queue-left i {
+            font-size: 4rem;
+            margin: 16px 0;
+        }
+
+        .queue-left h2 {
+            font-size: 2.4rem;
+            letter-spacing: 3px;
+        }
+
+        .queue-right {
+            background: #F8FAFC;
+            padding: 28px;
+        }
+
+        .queue-title {
+            font-size: 1.4rem;
+            font-weight: 950;
+            margin-bottom: 12px;
+        }
+
+        .number-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .number-tile {
+            background: white;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 12px;
+            text-align: center;
+            font-size: 1.35rem;
+            font-weight: 950;
+        }
+
+        .number-tile.ready {
+            color: #15803D;
+            background: #DCFCE7;
+            border-color: #86EFAC;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--muted);
+            font-weight: 800;
+            padding: 32px;
+        }
+
+
+        .status-dot {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            font-weight: 900;
+        }
+
+        .status-dot::before {
+            content: "";
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--success);
+            display: inline-block;
+        }
+
+        .status-low::before { background: var(--warning); }
+        .status-out::before { background: var(--danger); }
+
+        .report-card {
+            background: #F8FAFC;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 18px;
+            margin-bottom: 14px;
+        }
+
+        .report-card h3 {
+            margin-bottom: 10px;
+            color: var(--dark-2);
+        }
+
+        .report-line {
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 9px 0;
+            border-bottom: 1px solid var(--line);
+            font-weight: 750;
+        }
+
+        .report-line:last-child { border-bottom: none; }
+
+        .announcement-preview {
+            background: linear-gradient(135deg, rgba(255,77,141,0.12), rgba(255,209,74,0.18));
+            border: 1px solid rgba(255,77,141,0.18);
+            border-radius: 18px;
+            padding: 18px;
+            font-weight: 800;
+            color: var(--dark-2);
+            line-height: 1.6;
+        }
+
+        .textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .toast {
+            position: fixed;
+            right: 22px;
+            bottom: 22px;
+            background: var(--dark);
+            color: white;
+            padding: 14px 16px;
+            border-radius: 14px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.20);
+            display: none;
+            z-index: 9998;
+            font-weight: 850;
+        }
+
+        @media (max-width: 1100px) {
+            .app-shell { grid-template-columns: 1fr; }
+            .sidebar { position: relative; height: auto; }
+            .nav-btn { width: auto; display: inline-flex; }
+            .main { padding: 20px; }
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+            .toolbar { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 760px) {
+            .topbar { align-items: flex-start; flex-direction: column; }
+            .kpi-grid, .two-col, .three-col, .queue-board { grid-template-columns: 1fr; }
+            .toolbar { grid-template-columns: 1fr; }
+            .number-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <div id="loginScreen" class="login-screen">
+        <div class="login-card">
+            <div class="login-logo"><i class="fas fa-user-shield"></i></div>
+            <h1>Staff Login</h1>
+            <p>MIX YOU secure staff command centre</p>
+
+            <div class="field">
+                <label>Username</label>
+                <input id="staffUsername" type="text" placeholder="Enter username" autocomplete="username">
+            </div>
+
+            <div class="field">
+                <label>Password</label>
+                <input id="staffPassword" type="password" placeholder="Enter password" autocomplete="current-password" onkeydown="if(event.key==='Enter') staffLogin()">
+            </div>
+
+            <button class="primary-btn" onclick="staffLogin()">Login to Dashboard</button>
+            <div id="loginError" class="login-error">Wrong username or password.</div>
+            <div class="demo-note">Demo login: <strong>staff</strong> / <strong>mixyou123</strong></div>
+        </div>
+    </div>
+
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark"><i class="fas fa-blender"></i></div>
+                <div>
+                    <h2>MIX YOU</h2>
+                    <small>Staff Command</small>
+                </div>
+            </div>
+
+            <div class="nav-group-title">Operations</div>
+            <button class="nav-btn active" onclick="showSection('dashboard', this)"><i class="fas fa-chart-pie"></i> Dashboard</button>
+            <button class="nav-btn" onclick="showSection('orders', this)"><i class="fas fa-receipt"></i> Orders</button>
+            <button class="nav-btn" onclick="showSection('pickup', this)"><i class="fas fa-tv"></i> Pickup Queue</button>
+
+            <div class="nav-group-title">Business Control</div>
+            <button class="nav-btn" onclick="showSection('finance', this)"><i class="fas fa-coins"></i> Profit / Loss</button>
+            <button class="nav-btn" onclick="showSection('products', this)"><i class="fas fa-boxes-stacked"></i> Products</button>
+            <button class="nav-btn" onclick="showSection('vouchers', this)"><i class="fas fa-ticket"></i> Vouchers</button>
+            <button class="nav-btn" onclick="showSection('inventory', this)"><i class="fas fa-warehouse"></i> Inventory</button>
+            <button class="nav-btn" onclick="showSection('customers', this)"><i class="fas fa-users"></i> Customers</button>
+            <button class="nav-btn" onclick="showSection('reports', this)"><i class="fas fa-chart-column"></i> Reports</button>
+
+            <div class="nav-group-title">System</div>
+            <button class="nav-btn" onclick="showSection('announcement', this)"><i class="fas fa-bullhorn"></i> Announcement</button>
+            <button class="nav-btn" onclick="showSection('settings', this)"><i class="fas fa-gear"></i> Settings</button>
+
+            <div class="sidebar-footer">
+                <button class="nav-btn" onclick="staffLogout()"><i class="fas fa-right-from-bracket"></i> Logout</button>
+            </div>
+        </aside>
+
+        <main class="main">
+            <div class="topbar">
+                <div>
+                    <h1 id="pageTitle">Dashboard</h1>
+                    <p id="pageSubtitle">Monitor sales, orders, queue, and business performance.</p>
+                </div>
+                <div class="topbar-actions">
+                    <button class="ghost-btn" onclick="seedDemoOrder()"><i class="fas fa-wand-magic-sparkles"></i> Demo Order</button>
+                    <button class="secondary-btn" onclick="loadAll()"><i class="fas fa-rotate"></i> Refresh</button>
+                </div>
+            </div>
+
+            <section id="dashboard" class="content-section active">
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-icon"><i class="fas fa-receipt"></i></div>
+                        <h3>Total Orders</h3>
+                        <div class="kpi-value" id="kpiOrders">0</div>
+                        <div class="kpi-sub">All orders received</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon"><i class="fas fa-sack-dollar"></i></div>
+                        <h3>Total Revenue</h3>
+                        <div class="kpi-value" id="kpiRevenue">RM 0.00</div>
+                        <div class="kpi-sub">Excluding cancelled orders</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon"><i class="fas fa-arrow-trend-up"></i></div>
+                        <h3>Net Profit</h3>
+                        <div class="kpi-value" id="kpiProfit">RM 0.00</div>
+                        <div class="kpi-sub">Estimated after costs</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon"><i class="fas fa-hourglass-half"></i></div>
+                        <h3>Active Queue</h3>
+                        <div class="kpi-value" id="kpiActive">0</div>
+                        <div class="kpi-sub">Preparing + ready</div>
+                    </div>
+                </div>
+
+                <div class="two-col">
+                    <div class="panel">
+                        <div class="panel-header"><h2><i class="fas fa-bell-concierge"></i> Live Order Status</h2></div>
+                        <div class="three-col">
+                            <div class="kpi-card"><h3>Preparing</h3><div class="kpi-value" id="dashPreparing">0</div></div>
+                            <div class="kpi-card"><h3>Ready</h3><div class="kpi-value" id="dashReady">0</div></div>
+                            <div class="kpi-card"><h3>Completed</h3><div class="kpi-value" id="dashCompleted">0</div></div>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-header"><h2><i class="fas fa-star"></i> Best Seller</h2></div>
+                        <div id="bestSellerBox" class="empty-state">No order data yet.</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="orders" class="content-section">
+                <div class="panel">
+                    <div class="panel-header">
+                        <h2><i class="fas fa-list-check"></i> Order Management</h2>
+                        <div class="panel-actions">
+                            <button class="success-btn" onclick="exportOrdersCsv()"><i class="fas fa-file-export"></i> Export CSV</button>
+                            <button class="danger-btn" onclick="clearOrders()"><i class="fas fa-trash"></i> Clear Orders</button>
+                        </div>
+                    </div>
+
+                    <div class="toolbar">
+                        <input id="searchInput" class="input" placeholder="Search order, customer, item..." oninput="renderOrders()">
+                        <select id="statusFilter" class="select" onchange="renderOrders()">
+                            <option value="All">All Status</option>
+                            <option value="Preparing">Preparing</option>
+                            <option value="Ready for Pickup">Ready for Pickup</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                        <select id="sortFilter" class="select" onchange="renderOrders()">
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
+                            <option value="highest">Highest Total</option>
+                        </select>
+                        <button class="secondary-btn" onclick="renderOrders()"><i class="fas fa-magnifying-glass"></i> Search</button>
+                    </div>
+
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Order</th>
+                                    <th>Customer</th>
+                                    <th>Items</th>
+                                    <th>Total</th>
+                                    <th>Payment</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                    <th>Quick Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordersBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="pickup" class="content-section">
+                <div class="panel">
+                    <div class="panel-header">
+                        <h2><i class="fas fa-tv"></i> Pickup Display Preview</h2>
+                        <div class="panel-actions">
+                            <button class="success-btn" onclick="markAllPreparingReady()"><i class="fas fa-bell"></i> Mark Preparing Ready</button>
+                        </div>
+                    </div>
+                    <div class="queue-board">
+                        <div class="queue-left">
+                            <h2>MIX YOU</h2>
+                            <i class="fas fa-mug-hot"></i>
+                            <h2>PICKUP</h2>
+                            <strong>COUNTER</strong>
+                        </div>
+                        <div class="queue-right">
+                            <div class="queue-title">Ready for Pickup</div>
+                            <div id="readyGrid" class="number-grid"></div>
+                            <div class="queue-title">In Progress</div>
+                            <div id="progressGrid" class="number-grid"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="finance" class="content-section">
+                <div class="two-col">
+                    <div class="panel">
+                        <div class="panel-header"><h2><i class="fas fa-sliders"></i> Cost Settings</h2></div>
+                        <div class="field"><label>Ingredient Cost %</label><input id="ingredientCost" class="input" type="number" value="45" min="0" max="100" oninput="saveFinanceSettings(); calculateFinance();"></div>
+                        <div class="field"><label>Packaging Cost Per Order (RM)</label><input id="packagingCost" class="input" type="number" value="0.80" min="0" step="0.10" oninput="saveFinanceSettings(); calculateFinance();"></div>
+                        <div class="field"><label>Staff Cost Today (RM)</label><input id="staffCost" class="input" type="number" value="30" min="0" step="1" oninput="saveFinanceSettings(); calculateFinance();"></div>
+                        <div class="field"><label>Other Cost Today (RM)</label><input id="otherCost" class="input" type="number" value="0" min="0" step="1" oninput="saveFinanceSettings(); calculateFinance();"></div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-header"><h2><i class="fas fa-calculator"></i> Profit / Loss Summary</h2></div>
+                        <div class="finance-row"><span>Total Revenue</span><strong id="finRevenue">RM 0.00</strong></div>
+                        <div class="finance-row"><span>Ingredient Cost</span><strong id="finIngredient">RM 0.00</strong></div>
+                        <div class="finance-row"><span>Packaging Cost</span><strong id="finPackaging">RM 0.00</strong></div>
+                        <div class="finance-row"><span>Staff Cost</span><strong id="finStaff">RM 0.00</strong></div>
+                        <div class="finance-row"><span>Other Cost</span><strong id="finOther">RM 0.00</strong></div>
+                        <div id="netBox" class="net-box">Net Profit: RM 0.00</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="products" class="content-section">
+                <div class="panel">
+                    <div class="panel-header">
+                        <h2><i class="fas fa-boxes-stacked"></i> Product Control</h2>
+                        <div class="panel-actions">
+                            <button class="success-btn" onclick="addProduct()"><i class="fas fa-plus"></i> Add Product</button>
+                            <button class="secondary-btn" onclick="saveProducts()"><i class="fas fa-save"></i> Save Products</button>
+                        </div>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Product</th><th>Price RM</th><th>Cost RM</th><th>Status</th><th>Action</th></tr></thead>
+                            <tbody id="productsBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="vouchers" class="content-section">
+                <div class="panel">
+                    <div class="panel-header"><h2><i class="fas fa-ticket"></i> Voucher Control</h2></div>
+                    <div class="toolbar" style="grid-template-columns: 1fr 1fr 1fr auto;">
+                        <input id="voucherCode" class="input" placeholder="Voucher code">
+                        <input id="voucherDiscount" class="input" type="number" placeholder="Discount %" min="1" max="100">
+                        <select id="voucherStatus" class="select"><option>Active</option><option>Disabled</option></select>
+                        <button class="success-btn" onclick="addVoucher()"><i class="fas fa-plus"></i> Add</button>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Code</th><th>Discount</th><th>Status</th><th>Action</th></tr></thead>
+                            <tbody id="vouchersBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+
+            <section id="inventory" class="content-section">
+                <div class="panel">
+                    <div class="panel-header">
+                        <h2><i class="fas fa-warehouse"></i> Inventory / Stock Control</h2>
+                        <div class="panel-actions">
+                            <button class="success-btn" onclick="addInventoryItem()"><i class="fas fa-plus"></i> Add Stock</button>
+                            <button class="secondary-btn" onclick="saveInventory()"><i class="fas fa-save"></i> Save Stock</button>
+                        </div>
+                    </div>
+                    <p style="color: var(--muted); font-weight: 700; margin-bottom: 16px;">Track fruit, cup, straw, milk, and packaging stock. Low stock will show warning.</p>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Item</th><th>Category</th><th>Quantity</th><th>Unit</th><th>Reorder Level</th><th>Status</th><th>Action</th></tr></thead>
+                            <tbody id="inventoryBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="customers" class="content-section">
+                <div class="panel">
+                    <div class="panel-header">
+                        <h2><i class="fas fa-users"></i> Customer Management</h2>
+                        <div class="panel-actions">
+                            <button class="success-btn" onclick="exportCustomersCsv()"><i class="fas fa-file-export"></i> Export Customers</button>
+                        </div>
+                    </div>
+                    <div class="kpi-grid">
+                        <div class="kpi-card"><h3>Total Customers</h3><div class="kpi-value" id="customerCount">0</div><div class="kpi-sub">Unique names or emails</div></div>
+                        <div class="kpi-card"><h3>Top Customer</h3><div class="kpi-value" id="topCustomer">-</div><div class="kpi-sub">Highest spending customer</div></div>
+                        <div class="kpi-card"><h3>Average Spend</h3><div class="kpi-value" id="avgSpend">RM 0.00</div><div class="kpi-sub">Per active order</div></div>
+                        <div class="kpi-card"><h3>Repeat Customers</h3><div class="kpi-value" id="repeatCustomers">0</div><div class="kpi-sub">Customers with 2+ orders</div></div>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Customer</th><th>Email</th><th>Total Orders</th><th>Total Spend</th><th>Last Order</th><th>Suggestion</th></tr></thead>
+                            <tbody id="customersBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="reports" class="content-section">
+                <div class="two-col">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h2><i class="fas fa-chart-column"></i> Daily Closing Report</h2>
+                            <div class="panel-actions">
+                                <button class="success-btn" onclick="printDailyReport()"><i class="fas fa-print"></i> Print Report</button>
+                                <button class="secondary-btn" onclick="exportFinanceCsv()"><i class="fas fa-file-export"></i> Export Finance CSV</button>
+                            </div>
+                        </div>
+                        <div id="dailyReportBox"></div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-header"><h2><i class="fas fa-clipboard-check"></i> Closing Checklist</h2></div>
+                        <label><input type="checkbox" class="closing-check"> Cash counted</label><br><br>
+                        <label><input type="checkbox" class="closing-check"> Completed orders checked</label><br><br>
+                        <label><input type="checkbox" class="closing-check"> Ingredients stored properly</label><br><br>
+                        <label><input type="checkbox" class="closing-check"> Kitchen cleaned</label><br><br>
+                        <label><input type="checkbox" class="closing-check"> Tomorrow stock prepared</label><br><br>
+                        <button class="success-btn" onclick="saveClosingChecklist()"><i class="fas fa-save"></i> Save Checklist</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="announcement" class="content-section">
+                <div class="two-col">
+                    <div class="panel">
+                        <div class="panel-header"><h2><i class="fas fa-bullhorn"></i> Customer Announcement</h2></div>
+                        <div class="field">
+                            <label>Announcement message</label>
+                            <textarea id="announcementText" class="input textarea" placeholder="Example: Today special: Buy 2 smoothies, get 10% off!"></textarea>
+                        </div>
+                        <div class="field">
+                            <label>Status</label>
+                            <select id="announcementStatus" class="select">
+                                <option value="Active">Active</option>
+                                <option value="Disabled">Disabled</option>
+                            </select>
+                        </div>
+                        <button class="success-btn" onclick="saveAnnouncement()"><i class="fas fa-save"></i> Save Announcement</button>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-header"><h2><i class="fas fa-eye"></i> Preview</h2></div>
+                        <div id="announcementPreview" class="announcement-preview">No active announcement.</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="settings" class="content-section">
+                <div class="panel">
+                    <div class="panel-header"><h2><i class="fas fa-gear"></i> Staff Settings</h2></div>
+                    <div class="two-col">
+                        <div>
+                            <div class="field"><label>Staff Username</label><input class="input" value="staff" disabled></div>
+                            <div class="field"><label>Staff Password</label><input class="input" value="mixyou123" disabled></div>
+                            <p style="color: var(--muted); font-weight: 700;">For school demo only. Real websites need a proper backend login system.</p>
+                        </div>
+                        <div>
+                            <button class="danger-btn" onclick="resetAllStaffData()"><i class="fas fa-triangle-exclamation"></i> Reset All Staff Data</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        const STAFF_USERNAME = 'staff';
+        const STAFF_PASSWORD = 'mixyou123';
+
+        const defaultProducts = [
+            { name: 'Mango Smoothie', price: 8.90, cost: 3.20, status: 'Available' },
+            { name: 'Strawberry Smoothie', price: 9.90, cost: 3.80, status: 'Available' },
+            { name: 'Chocolate Banana', price: 10.90, cost: 4.20, status: 'Available' },
+            { name: 'Avocado Smoothie', price: 12.90, cost: 5.50, status: 'Available' },
+            { name: 'Dragon Fruit Smoothie', price: 11.90, cost: 4.70, status: 'Available' }
+        ];
+
+        const defaultVouchers = [
+            { code: 'MIX10', discount: 10, status: 'Active' },
+            { code: 'WELCOME15', discount: 15, status: 'Active' }
+        ];
+
+        const defaultInventory = [
+            { name: 'Mango', category: 'Fruit', qty: 20, unit: 'pcs', reorder: 8 },
+            { name: 'Strawberry', category: 'Fruit', qty: 35, unit: 'pcs', reorder: 12 },
+            { name: 'Banana', category: 'Fruit', qty: 25, unit: 'pcs', reorder: 10 },
+            { name: 'Milk', category: 'Ingredient', qty: 8, unit: 'litres', reorder: 4 },
+            { name: 'Smoothie Cups', category: 'Packaging', qty: 80, unit: 'pcs', reorder: 30 },
+            { name: 'Straws', category: 'Packaging', qty: 90, unit: 'pcs', reorder: 30 }
+        ];
+
+        function staffLogin() {
+            const username = document.getElementById('staffUsername').value.trim();
+            const password = document.getElementById('staffPassword').value.trim();
+            if (username === STAFF_USERNAME && password === STAFF_PASSWORD) {
+                localStorage.setItem('mixyou_staff_logged_in', 'yes');
+                document.getElementById('loginScreen').style.display = 'none';
+                loadAll();
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+            }
+        }
+
+        function staffLogout() {
+            localStorage.removeItem('mixyou_staff_logged_in');
+            document.getElementById('loginScreen').style.display = 'flex';
+        }
+
+        function checkLogin() {
+            if (localStorage.getItem('mixyou_staff_logged_in') === 'yes') {
+                document.getElementById('loginScreen').style.display = 'none';
+            }
+        }
+
+        function showSection(sectionId, btn) {
+            document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(item => item.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            btn.classList.add('active');
+
+            const titles = {
+                dashboard: ['Dashboard', 'Monitor sales, orders, queue, and business performance.'],
+                orders: ['Order Management', 'Update order status and manage customer orders.'],
+                pickup: ['Pickup Queue', 'Preview what the pickup display will show.'],
+                finance: ['Profit / Loss', 'Track revenue, costs, profit, and loss.'],
+                products: ['Product Control', 'Edit products, cost, price, and availability.'],
+                vouchers: ['Voucher Control', 'Create and manage customer discount codes.'],
+                inventory: ['Inventory Control', 'Track stock level, low stock, and packaging.'],
+                customers: ['Customer Management', 'View customer spending, repeat customers, and export customer data.'],
+                reports: ['Reports', 'Daily closing report, finance export, and closing checklist.'],
+                announcement: ['Announcement', 'Control promotion messages and customer notices.'],
+                settings: ['Settings', 'Manage demo login and staff data.']
+            };
+            document.getElementById('pageTitle').textContent = titles[sectionId][0];
+            document.getElementById('pageSubtitle').textContent = titles[sectionId][1];
+            loadAll();
+        }
+
+        function toast(message) {
+            const box = document.getElementById('toast');
+            box.textContent = message;
+            box.style.display = 'block';
+            clearTimeout(window.toastTimer);
+            window.toastTimer = setTimeout(() => box.style.display = 'none', 2200);
+        }
+
+        function getOrders() {
+            try {
+                return JSON.parse(localStorage.getItem('mixyou_staff_orders')) || [];
+            } catch (error) {
+                console.error("Broken staff order data:", error);
+                localStorage.removeItem('mixyou_staff_orders');
+                return [];
+            }
+        }
+
+        function saveOrders(orders) {
+            localStorage.setItem('mixyou_staff_orders', JSON.stringify(orders));
+        }
+
+        function moneyToNumber(value) {
+            if (typeof value === 'number') return value;
+            if (!value) return 0;
+            return Number(String(value).replace(/RM|,/g, '').trim()) || 0;
+        }
+
+        function formatMoney(value) {
+            return `RM ${Number(value || 0).toFixed(2)}`;
+        }
+
+        function shortNo(receiptNo) {
+            return String(receiptNo || '----').replace('MY-', '');
+        }
+
+        function badgeClass(status) {
+            if (status === 'Ready for Pickup') return 'badge-ready';
+            if (status === 'Completed') return 'badge-completed';
+            if (status === 'Cancelled') return 'badge-cancelled';
+            return 'badge-preparing';
+        }
+
+        function loadAll() {
+            renderDashboard();
+            renderOrders();
+            renderPickup();
+            loadFinanceSettings();
+            calculateFinance();
+            renderProducts();
+            renderVouchers();
+            renderInventory();
+            renderCustomers();
+            renderReports();
+            loadAnnouncement();
+            loadClosingChecklist();
+        }
+
+        function getRevenue(orders) {
+            return orders
+                .filter(order => order.status !== 'Cancelled')
+                .reduce((sum, order) => sum + moneyToNumber(order.total), 0);
+        }
+
+        function renderDashboard() {
+            const orders = getOrders();
+            const revenue = getRevenue(orders);
+            const preparing = orders.filter(o => o.status === 'Preparing').length;
+            const ready = orders.filter(o => o.status === 'Ready for Pickup').length;
+            const completed = orders.filter(o => o.status === 'Completed').length;
+            const active = preparing + ready;
+            const net = calculateNetProfit(orders, revenue);
+
+            document.getElementById('kpiOrders').textContent = orders.length;
+            document.getElementById('kpiRevenue').textContent = formatMoney(revenue);
+            document.getElementById('kpiProfit').textContent = formatMoney(net);
+            document.getElementById('kpiActive').textContent = active;
+            document.getElementById('dashPreparing').textContent = preparing;
+            document.getElementById('dashReady').textContent = ready;
+            document.getElementById('dashCompleted').textContent = completed;
+
+            renderBestSeller(orders);
+        }
+
+        function renderBestSeller(orders) {
+            const counts = {};
+            orders.forEach(order => {
+                const text = order.items || '';
+                text.split('\n').forEach(line => {
+                    const clean = line.replace(/^[-•]\s*/, '').replace(/x\s*\d+/i, '').trim();
+                    if (clean) counts[clean] = (counts[clean] || 0) + 1;
+                });
+            });
+            const best = Object.entries(counts).sort((a,b) => b[1] - a[1])[0];
+            document.getElementById('bestSellerBox').innerHTML = best
+                ? `<div class="kpi-value">${best[0]}</div><div class="kpi-sub">Sold ${best[1]} time(s)</div>`
+                : 'No order data yet.';
+        }
+
+        function renderOrders() {
+            const body = document.getElementById('ordersBody');
+            if (!body) return;
+
+            let orders = getOrders();
+            const search = (document.getElementById('searchInput')?.value || '').toLowerCase();
+            const status = document.getElementById('statusFilter')?.value || 'All';
+            const sort = document.getElementById('sortFilter')?.value || 'newest';
+
+            if (status !== 'All') orders = orders.filter(order => order.status === status);
+            if (search) {
+                orders = orders.filter(order => JSON.stringify(order).toLowerCase().includes(search));
+            }
+            if (sort === 'oldest') orders = orders.slice().reverse();
+            if (sort === 'highest') orders = orders.slice().sort((a,b) => moneyToNumber(b.total) - moneyToNumber(a.total));
+
+            if (orders.length === 0) {
+                body.innerHTML = `<tr><td colspan="8" class="empty-state">No matching orders.</td></tr>`;
+                return;
+            }
+
+            body.innerHTML = orders.map(order => `
+                <tr>
+                    <td><span class="order-no">${order.receiptNo || '-'}</span><br><small>${order.date || ''}<br>${order.time || ''}</small></td>
+                    <td><strong>${order.customerName || 'Customer'}</strong><br><small>${order.customerEmail || ''}</small></td>
+                    <td class="items-cell">${String(order.items || '-').replace(/\n/g, '<br>')}</td>
+                    <td><strong>${order.total || 'RM 0.00'}</strong></td>
+                    <td>${order.paymentMethod || '-'}</td>
+                    <td>${order.orderType || '-'}</td>
+                    <td><span class="badge ${badgeClass(order.status)}">${order.status || 'Preparing'}</span></td>
+                    <td>
+                        <div class="quick-actions">
+                            <button class="mini-btn mini-warning" onclick="updateStatus('${order.receiptNo}', 'Preparing')">Preparing</button>
+                            <button class="mini-btn mini-success" onclick="updateStatus('${order.receiptNo}', 'Ready for Pickup')">Ready</button>
+                            <button class="mini-btn mini-dark" onclick="updateStatus('${order.receiptNo}', 'Completed')">Done</button>
+                            <button class="mini-btn mini-danger" onclick="updateStatus('${order.receiptNo}', 'Cancelled')">Cancel</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateStatus(receiptNo, status) {
+            const orders = getOrders().map(order => order.receiptNo === receiptNo ? { ...order, status } : order);
+            saveOrders(orders);
+            if (status === 'Ready for Pickup') playReadySound();
+            toast(`Order ${shortNo(receiptNo)} moved to ${status}.`);
+            loadAll();
+        }
+
+        function markAllPreparingReady() {
+            const orders = getOrders().map(order => order.status === 'Preparing' ? { ...order, status: 'Ready for Pickup' } : order);
+            saveOrders(orders);
+            playReadySound();
+            toast('All preparing orders moved to Ready.');
+            loadAll();
+        }
+
+        function renderPickup() {
+            const readyGrid = document.getElementById('readyGrid');
+            const progressGrid = document.getElementById('progressGrid');
+            if (!readyGrid || !progressGrid) return;
+            const orders = getOrders();
+            const ready = orders.filter(o => o.status === 'Ready for Pickup').slice(0, 8);
+            const preparing = orders.filter(o => o.status === 'Preparing').slice(0, 8);
+
+            readyGrid.innerHTML = ready.length ? ready.map(o => `<div class="number-tile ready">${shortNo(o.receiptNo)}</div>`).join('') : `<div class="empty-state" style="grid-column:1/-1;">No ready orders</div>`;
+            progressGrid.innerHTML = preparing.length ? preparing.map(o => `<div class="number-tile">${shortNo(o.receiptNo)}</div>`).join('') : `<div class="empty-state" style="grid-column:1/-1;">No orders in progress</div>`;
+        }
+
+        function playReadySound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                function beep(frequency, startTime, duration) {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    oscillator.frequency.value = frequency;
+                    oscillator.type = 'sine';
+                    gainNode.gain.setValueAtTime(0.24, audioContext.currentTime + startTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + startTime + duration);
+                    oscillator.start(audioContext.currentTime + startTime);
+                    oscillator.stop(audioContext.currentTime + startTime + duration);
+                }
+                beep(880, 0, 0.22);
+                beep(1100, 0.28, 0.22);
+                beep(1320, 0.56, 0.22);
+            } catch (error) {}
+        }
+
+        function loadFinanceSettings() {
+            const settings = JSON.parse(localStorage.getItem('mixyou_finance_settings')) || {};
+            if (settings.ingredientCost !== undefined) document.getElementById('ingredientCost').value = settings.ingredientCost;
+            if (settings.packagingCost !== undefined) document.getElementById('packagingCost').value = settings.packagingCost;
+            if (settings.staffCost !== undefined) document.getElementById('staffCost').value = settings.staffCost;
+            if (settings.otherCost !== undefined) document.getElementById('otherCost').value = settings.otherCost;
+        }
+
+        function saveFinanceSettings() {
+            localStorage.setItem('mixyou_finance_settings', JSON.stringify({
+                ingredientCost: document.getElementById('ingredientCost').value,
+                packagingCost: document.getElementById('packagingCost').value,
+                staffCost: document.getElementById('staffCost').value,
+                otherCost: document.getElementById('otherCost').value
+            }));
+        }
+
+        function calculateNetProfit(orders, revenue) {
+            const ingredientPercent = Number(document.getElementById('ingredientCost')?.value || 45);
+            const packagingCost = Number(document.getElementById('packagingCost')?.value || 0.8);
+            const staffCost = Number(document.getElementById('staffCost')?.value || 30);
+            const otherCost = Number(document.getElementById('otherCost')?.value || 0);
+            const activeOrders = orders.filter(order => order.status !== 'Cancelled').length;
+            return revenue - (revenue * ingredientPercent / 100) - (activeOrders * packagingCost) - staffCost - otherCost;
+        }
+
+        function calculateFinance() {
+            const orders = getOrders();
+            const revenue = getRevenue(orders);
+            const ingredientPercent = Number(document.getElementById('ingredientCost')?.value || 45);
+            const packagingCost = Number(document.getElementById('packagingCost')?.value || 0.8);
+            const staffCost = Number(document.getElementById('staffCost')?.value || 30);
+            const otherCost = Number(document.getElementById('otherCost')?.value || 0);
+            const activeOrders = orders.filter(order => order.status !== 'Cancelled').length;
+            const ingredientTotal = revenue * ingredientPercent / 100;
+            const packagingTotal = activeOrders * packagingCost;
+            const net = revenue - ingredientTotal - packagingTotal - staffCost - otherCost;
+
+            document.getElementById('finRevenue').textContent = formatMoney(revenue);
+            document.getElementById('finIngredient').textContent = formatMoney(ingredientTotal);
+            document.getElementById('finPackaging').textContent = formatMoney(packagingTotal);
+            document.getElementById('finStaff').textContent = formatMoney(staffCost);
+            document.getElementById('finOther').textContent = formatMoney(otherCost);
+            document.getElementById('netBox').textContent = net >= 0 ? `Net Profit: ${formatMoney(net)}` : `Net Loss: ${formatMoney(Math.abs(net))}`;
+            document.getElementById('netBox').style.background = net >= 0 ? 'linear-gradient(135deg, #22C55E, #86EFAC)' : 'linear-gradient(135deg, #EF4444, #F59E0B)';
+        }
+
+        function getProducts() {
+            try {
+                return JSON.parse(localStorage.getItem('mixyou_products')) || defaultProducts;
+            } catch (error) {
+                localStorage.removeItem('mixyou_products');
+                return defaultProducts;
+            }
+        }
+
+        function renderProducts() {
+            const body = document.getElementById('productsBody');
+            if (!body) return;
+            const products = getProducts();
+            body.innerHTML = products.map((p, i) => `
+                <tr>
+                    <td><input class="input product-name" data-index="${i}" value="${p.name}"></td>
+                    <td><input class="input product-price" data-index="${i}" type="number" step="0.10" value="${p.price}"></td>
+                    <td><input class="input product-cost" data-index="${i}" type="number" step="0.10" value="${p.cost}"></td>
+                    <td>
+                        <select class="select product-status" data-index="${i}">
+                            <option ${p.status === 'Available' ? 'selected' : ''}>Available</option>
+                            <option ${p.status === 'Sold Out' ? 'selected' : ''}>Sold Out</option>
+                        </select>
+                    </td>
+                    <td><button class="mini-btn mini-danger" onclick="deleteProduct(${i})">Delete</button></td>
+                </tr>
+            `).join('');
+        }
+
+        function saveProducts() {
+            const products = getProducts();
+            document.querySelectorAll('.product-name').forEach(input => products[input.dataset.index].name = input.value.trim() || 'Unnamed Product');
+            document.querySelectorAll('.product-price').forEach(input => products[input.dataset.index].price = Number(input.value) || 0);
+            document.querySelectorAll('.product-cost').forEach(input => products[input.dataset.index].cost = Number(input.value) || 0);
+            document.querySelectorAll('.product-status').forEach(select => products[select.dataset.index].status = select.value);
+            localStorage.setItem('mixyou_products', JSON.stringify(products));
+            toast('Products saved.');
+            renderProducts();
+        }
+
+        function addProduct() {
+            const products = getProducts();
+            products.push({ name: 'New Smoothie', price: 9.90, cost: 3.50, status: 'Available' });
+            localStorage.setItem('mixyou_products', JSON.stringify(products));
+            renderProducts();
+        }
+
+        function deleteProduct(index) {
+            const products = getProducts();
+            products.splice(index, 1);
+            localStorage.setItem('mixyou_products', JSON.stringify(products));
+            renderProducts();
+        }
+
+        function getVouchers() {
+            try {
+                return JSON.parse(localStorage.getItem('mixyou_staff_vouchers')) || defaultVouchers;
+            } catch (error) {
+                localStorage.removeItem('mixyou_staff_vouchers');
+                return defaultVouchers;
+            }
+        }
+
+        function renderVouchers() {
+            const body = document.getElementById('vouchersBody');
+            if (!body) return;
+            const vouchers = getVouchers();
+            body.innerHTML = vouchers.map((v, i) => `
+                <tr>
+                    <td><strong>${v.code}</strong></td>
+                    <td>${v.discount}%</td>
+                    <td><span class="badge ${v.status === 'Active' ? 'badge-active' : 'badge-disabled'}">${v.status}</span></td>
+                    <td><button class="mini-btn mini-danger" onclick="deleteVoucher(${i})">Delete</button></td>
+                </tr>
+            `).join('');
+        }
+
+        function addVoucher() {
+            const code = document.getElementById('voucherCode').value.trim().toUpperCase();
+            const discount = Number(document.getElementById('voucherDiscount').value);
+            const status = document.getElementById('voucherStatus').value;
+            if (!code || !discount) {
+                alert('Please enter voucher code and discount.');
+                return;
+            }
+            const vouchers = getVouchers();
+            vouchers.unshift({ code, discount, status });
+            localStorage.setItem('mixyou_staff_vouchers', JSON.stringify(vouchers));
+            document.getElementById('voucherCode').value = '';
+            document.getElementById('voucherDiscount').value = '';
+            renderVouchers();
+            toast('Voucher added.');
+        }
+
+        function deleteVoucher(index) {
+            const vouchers = getVouchers();
+            vouchers.splice(index, 1);
+            localStorage.setItem('mixyou_staff_vouchers', JSON.stringify(vouchers));
+            renderVouchers();
+        }
+
+
+        function getInventory() {
+            return JSON.parse(localStorage.getItem('mixyou_inventory')) || defaultInventory;
+        }
+
+        function stockStatus(item) {
+            const qty = Number(item.qty) || 0;
+            const reorder = Number(item.reorder) || 0;
+            if (qty <= 0) return { text: 'Out of Stock', cls: 'status-dot status-out' };
+            if (qty <= reorder) return { text: 'Low Stock', cls: 'status-dot status-low' };
+            return { text: 'OK', cls: 'status-dot' };
+        }
+
+        function renderInventory() {
+            const body = document.getElementById('inventoryBody');
+            if (!body) return;
+            const inventory = getInventory();
+            body.innerHTML = inventory.map((item, i) => {
+                const status = stockStatus(item);
+                return `
+                    <tr>
+                        <td><input class="input stock-name" data-index="${i}" value="${item.name}"></td>
+                        <td><input class="input stock-category" data-index="${i}" value="${item.category}"></td>
+                        <td><input class="input stock-qty" data-index="${i}" type="number" step="1" value="${item.qty}"></td>
+                        <td><input class="input stock-unit" data-index="${i}" value="${item.unit}"></td>
+                        <td><input class="input stock-reorder" data-index="${i}" type="number" step="1" value="${item.reorder}"></td>
+                        <td><span class="${status.cls}">${status.text}</span></td>
+                        <td><button class="mini-btn mini-danger" onclick="deleteInventoryItem(${i})">Delete</button></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function saveInventory() {
+            const inventory = getInventory();
+            document.querySelectorAll('.stock-name').forEach(input => inventory[input.dataset.index].name = input.value.trim() || 'Unnamed Item');
+            document.querySelectorAll('.stock-category').forEach(input => inventory[input.dataset.index].category = input.value.trim() || 'General');
+            document.querySelectorAll('.stock-qty').forEach(input => inventory[input.dataset.index].qty = Number(input.value) || 0);
+            document.querySelectorAll('.stock-unit').forEach(input => inventory[input.dataset.index].unit = input.value.trim() || 'pcs');
+            document.querySelectorAll('.stock-reorder').forEach(input => inventory[input.dataset.index].reorder = Number(input.value) || 0);
+            localStorage.setItem('mixyou_inventory', JSON.stringify(inventory));
+            toast('Inventory saved.');
+            renderInventory();
+        }
+
+        function addInventoryItem() {
+            const inventory = getInventory();
+            inventory.push({ name: 'New Stock Item', category: 'Ingredient', qty: 10, unit: 'pcs', reorder: 5 });
+            localStorage.setItem('mixyou_inventory', JSON.stringify(inventory));
+            renderInventory();
+        }
+
+        function deleteInventoryItem(index) {
+            const inventory = getInventory();
+            inventory.splice(index, 1);
+            localStorage.setItem('mixyou_inventory', JSON.stringify(inventory));
+            renderInventory();
+        }
+
+        function getCustomerSummary() {
+            const customers = {};
+            getOrders().filter(order => order.status !== 'Cancelled').forEach(order => {
+                const key = (order.customerEmail || order.customerName || 'Walk-in Customer').toLowerCase();
+                if (!customers[key]) {
+                    customers[key] = {
+                        name: order.customerName || 'Walk-in Customer',
+                        email: order.customerEmail || '-',
+                        orders: 0,
+                        spend: 0,
+                        lastOrder: ''
+                    };
+                }
+                customers[key].orders += 1;
+                customers[key].spend += moneyToNumber(order.total);
+                customers[key].lastOrder = `${order.date || ''} ${order.time || ''}`.trim();
+            });
+            return Object.values(customers).sort((a, b) => b.spend - a.spend);
+        }
+
+        function renderCustomers() {
+            const body = document.getElementById('customersBody');
+            if (!body) return;
+            const customers = getCustomerSummary();
+            const activeOrders = getOrders().filter(order => order.status !== 'Cancelled');
+            const top = customers[0];
+            const repeat = customers.filter(c => c.orders >= 2).length;
+            const avg = activeOrders.length ? getRevenue(getOrders()) / activeOrders.length : 0;
+
+            document.getElementById('customerCount').textContent = customers.length;
+            document.getElementById('topCustomer').textContent = top ? top.name : '-';
+            document.getElementById('avgSpend').textContent = formatMoney(avg);
+            document.getElementById('repeatCustomers').textContent = repeat;
+
+            if (!customers.length) {
+                body.innerHTML = `<tr><td colspan="6" class="empty-state">No customer data yet.</td></tr>`;
+                return;
+            }
+
+            body.innerHTML = customers.map(customer => `
+                <tr>
+                    <td><strong>${customer.name}</strong></td>
+                    <td>${customer.email}</td>
+                    <td>${customer.orders}</td>
+                    <td><strong>${formatMoney(customer.spend)}</strong></td>
+                    <td>${customer.lastOrder || '-'}</td>
+                    <td>${customer.orders >= 2 ? 'Give loyalty reward' : 'Offer welcome voucher'}</td>
+                </tr>
+            `).join('');
+        }
+
+        function exportCustomersCsv() {
+            const customers = getCustomerSummary();
+            if (!customers.length) {
+                alert('No customer data to export.');
+                return;
+            }
+            const headers = ['Customer','Email','Total Orders','Total Spend','Last Order'];
+            const rows = customers.map(c => [c.name, c.email, c.orders, formatMoney(c.spend), c.lastOrder]);
+            downloadCsv('mix-you-customers.csv', headers, rows);
+        }
+
+        function renderReports() {
+            const box = document.getElementById('dailyReportBox');
+            if (!box) return;
+            const orders = getOrders();
+            const revenue = getRevenue(orders);
+            const profit = calculateNetProfit(orders, revenue);
+            const preparing = orders.filter(o => o.status === 'Preparing').length;
+            const ready = orders.filter(o => o.status === 'Ready for Pickup').length;
+            const completed = orders.filter(o => o.status === 'Completed').length;
+            const cancelled = orders.filter(o => o.status === 'Cancelled').length;
+            const inventory = getInventory();
+            const lowStock = inventory.filter(item => stockStatus(item).text !== 'OK').length;
+            const bestSellerText = document.getElementById('bestSellerBox')?.innerText || 'No data';
+
+            box.innerHTML = `
+                <div class="report-card">
+                    <h3>Sales Summary</h3>
+                    <div class="report-line"><span>Total orders</span><strong>${orders.length}</strong></div>
+                    <div class="report-line"><span>Total revenue</span><strong>${formatMoney(revenue)}</strong></div>
+                    <div class="report-line"><span>Estimated profit / loss</span><strong>${profit >= 0 ? formatMoney(profit) : '-' + formatMoney(Math.abs(profit))}</strong></div>
+                    <div class="report-line"><span>Best seller</span><strong>${bestSellerText}</strong></div>
+                </div>
+                <div class="report-card">
+                    <h3>Operation Summary</h3>
+                    <div class="report-line"><span>Preparing</span><strong>${preparing}</strong></div>
+                    <div class="report-line"><span>Ready for pickup</span><strong>${ready}</strong></div>
+                    <div class="report-line"><span>Completed</span><strong>${completed}</strong></div>
+                    <div class="report-line"><span>Cancelled</span><strong>${cancelled}</strong></div>
+                    <div class="report-line"><span>Low stock items</span><strong>${lowStock}</strong></div>
+                </div>
+            `;
+        }
+
+        function printDailyReport() {
+            const report = document.getElementById('dailyReportBox').innerHTML;
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                    <head>
+                        <title>MIX YOU Daily Closing Report</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; padding: 30px; color: #172033; }
+                            h1 { color: #FF4D8D; }
+                            .report-card { border: 1px solid #ddd; border-radius: 12px; padding: 18px; margin-bottom: 16px; }
+                            .report-line { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 8px 0; }
+                        </style>
+                    </head>
+                    <body>
+                        <h1>MIX YOU Daily Closing Report</h1>
+                        <p>Generated: ${new Date().toLocaleString()}</p>
+                        ${report}
+                    </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        function exportFinanceCsv() {
+            const orders = getOrders();
+            const revenue = getRevenue(orders);
+            const ingredientPercent = Number(document.getElementById('ingredientCost')?.value || 45);
+            const packagingCost = Number(document.getElementById('packagingCost')?.value || 0.8);
+            const staffCost = Number(document.getElementById('staffCost')?.value || 30);
+            const otherCost = Number(document.getElementById('otherCost')?.value || 0);
+            const activeOrders = orders.filter(order => order.status !== 'Cancelled').length;
+            const ingredientTotal = revenue * ingredientPercent / 100;
+            const packagingTotal = activeOrders * packagingCost;
+            const net = revenue - ingredientTotal - packagingTotal - staffCost - otherCost;
+            const rows = [
+                ['Total Revenue', formatMoney(revenue)],
+                ['Ingredient Cost', formatMoney(ingredientTotal)],
+                ['Packaging Cost', formatMoney(packagingTotal)],
+                ['Staff Cost', formatMoney(staffCost)],
+                ['Other Cost', formatMoney(otherCost)],
+                ['Net Profit / Loss', net >= 0 ? formatMoney(net) : '-' + formatMoney(Math.abs(net))]
+            ];
+            downloadCsv('mix-you-finance-report.csv', ['Metric','Amount'], rows);
+        }
+
+        function downloadCsv(filename, headers, rows) {
+            const csv = [headers, ...rows].map(row => row.map(value => `"${String(value || '').replace(/"/g, '""')}"`).join(',')).join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function saveAnnouncement() {
+            const text = document.getElementById('announcementText').value.trim();
+            const status = document.getElementById('announcementStatus').value;
+            localStorage.setItem('mixyou_announcement', JSON.stringify({ text, status }));
+            loadAnnouncement();
+            toast('Announcement saved.');
+        }
+
+        function loadAnnouncement() {
+            const announcement = JSON.parse(localStorage.getItem('mixyou_announcement')) || { text: '', status: 'Disabled' };
+            const textBox = document.getElementById('announcementText');
+            const statusBox = document.getElementById('announcementStatus');
+            const preview = document.getElementById('announcementPreview');
+            if (!textBox || !statusBox || !preview) return;
+            textBox.value = announcement.text || '';
+            statusBox.value = announcement.status || 'Disabled';
+            preview.textContent = announcement.status === 'Active' && announcement.text ? announcement.text : 'No active announcement.';
+        }
+
+        function saveClosingChecklist() {
+            const checks = [...document.querySelectorAll('.closing-check')].map(check => check.checked);
+            localStorage.setItem('mixyou_closing_checklist', JSON.stringify(checks));
+            toast('Closing checklist saved.');
+        }
+
+        function loadClosingChecklist() {
+            const checks = JSON.parse(localStorage.getItem('mixyou_closing_checklist')) || [];
+            document.querySelectorAll('.closing-check').forEach((check, index) => check.checked = !!checks[index]);
+        }
+
+        function clearOrders() {
+            if (!confirm('Clear all orders?')) return;
+            localStorage.removeItem('mixyou_staff_orders');
+            loadAll();
+            toast('All orders cleared.');
+        }
+
+        function resetAllStaffData() {
+            if (!confirm('Reset orders, products, vouchers and finance settings?')) return;
+            localStorage.removeItem('mixyou_staff_orders');
+            localStorage.removeItem('mixyou_products');
+            localStorage.removeItem('mixyou_staff_vouchers');
+            localStorage.removeItem('mixyou_finance_settings');
+            localStorage.removeItem('mixyou_inventory');
+            localStorage.removeItem('mixyou_announcement');
+            localStorage.removeItem('mixyou_closing_checklist');
+            loadAll();
+            toast('Staff data reset.');
+        }
+
+        function seedDemoOrder() {
+            const now = new Date();
+            const receiptNo = 'MY-' + Math.floor(100000 + Math.random() * 899999);
+            const orders = getOrders();
+            orders.unshift({
+                receiptNo,
+                customerName: 'Demo Customer',
+                customerEmail: 'demo@mixyou.com',
+                items: '- Mango Smoothie x 1\n- Strawberry Smoothie x 1',
+                subtotal: 'RM 18.80',
+                tax: 'RM 1.13',
+                discount: '-RM 0.00',
+                delivery: 'RM 0.00',
+                total: 'RM 19.93',
+                paymentMethod: 'Cash',
+                orderType: 'Pickup',
+                readyTime: '10 minutes',
+                status: 'Preparing',
+                date: now.toLocaleDateString(),
+                time: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            });
+            saveOrders(orders);
+            loadAll();
+            toast('Demo order added.');
+        }
+
+        function exportOrdersCsv() {
+            const orders = getOrders();
+            if (!orders.length) {
+                alert('No orders to export.');
+                return;
+            }
+            const headers = ['Order No','Customer','Email','Items','Total','Payment','Type','Status','Date','Time'];
+            const rows = orders.map(o => [o.receiptNo, o.customerName, o.customerEmail, String(o.items || '').replace(/\n/g, ' | '), o.total, o.paymentMethod, o.orderType, o.status, o.date, o.time]);
+            const csv = [headers, ...rows].map(row => row.map(value => `"${String(value || '').replace(/"/g, '""')}"`).join(',')).join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'mix-you-orders.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            checkLogin();
+            loadFinanceSettings();
+            loadAll();
+            setInterval(() => {
+                if (document.activeElement && ['INPUT', 'SELECT'].includes(document.activeElement.tagName)) return;
+                loadAll();
+            }, 5000);
+        });
+    </script>
+</body>
+</html>
